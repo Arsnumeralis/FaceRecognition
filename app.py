@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request 
 
 app = Flask(__name__)
 
@@ -8,6 +8,9 @@ def index():
     return {'message': 'Welcome to the FACE!'}
 
 
-@app.route('/paulius')
+@app.route('/paulius', methods=["GET"])
 def funkcija():
-    return {'dantys': '32'}
+    print(request.remote_addr)
+    ip_address = request.remote_addr
+    return {'Jusu IP adresas': ip_address}
+
