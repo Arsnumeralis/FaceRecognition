@@ -4,7 +4,7 @@ from flask.wrappers import Response
 
 uploads = "/home/paulius/face/uploads"
 allowed_extentions = {
-    "jpg", "png", "jpeg"
+    "jpg", "png", "jpeg", "xml"
 }
 
 app = Flask(__name__)
@@ -24,12 +24,15 @@ def Homepage():
 @app.route("/ml-upload", methods=["POST"])
 def ml_upload():
     files = request.files.getlist("file_name")
+    name = request.form["person_name"]
+    if not os.path.isdir(os.path.join(app.config["uploads"], "machine-learning", name)):
+        os.mkdir(os.path.join(app.config["uploads"], "machine-learning", name))
     uploaded = []
     for file in files:
         if allowed_file(file.filename):
             upload_file = file.filename
             uploaded.append(upload_file)
-            file.save(os.path.join(app.config["uploads"], "machine-learning", upload_file))
+            file.save(os.path.join(app.config["uploads"], "machine-learning", name, upload_file))
             print(uploaded)
     return {"uploaded": uploaded}
 
