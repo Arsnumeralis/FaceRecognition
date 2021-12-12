@@ -1,3 +1,30 @@
+#!/usr/bin/python
+# The contents of this file are in the public domain. See LICENSE_FOR_EXAMPLE_PROGRAMS.txt
+#
+# This example program shows how you can use dlib to make a HOG based object
+# detector for things like faces, pedestrians, and any other semi-rigid
+# object.  In particular, we go though the steps to train the kind of sliding
+# window object detector first published by Dalal and Triggs in 2005 in the
+# paper Histograms of Oriented Gradients for Human Detection.
+#
+#
+# COMPILING/INSTALLING THE DLIB PYTHON INTERFACE
+#   You can install dlib using the command:
+#       pip install dlib
+#
+#   Alternatively, if you want to compile dlib yourself then go into the dlib
+#   root folder and run:
+#       python setup.py install
+#
+#   Compiling dlib should work on any operating system so long as you have
+#   CMake installed.  On Ubuntu, this can be done easily by running the
+#   command:
+#       sudo apt-get install cmake
+#
+#   Also note that this example requires Numpy which can be installed
+#   via the command:
+#       pip install numpy
+
 import os
 import sys
 import glob
@@ -16,7 +43,6 @@ if len(sys.argv) != 2:
         "    ./train_object_detector.py ../examples/faces")
     exit()
 faces_folder = sys.argv[1]
-# person_name = sys.argv[2]
 
 
 # Now let's do the training.  The train_simple_object_detector() function has a
@@ -35,7 +61,7 @@ options.add_left_right_image_flips = True
 # few different C values and see what works best for your data.
 options.C = 5
 # Tell the code how many CPU cores your computer has for the fastest training.
-options.num_threads = 2
+options.num_threads = 4
 options.be_verbose = True
 
 
@@ -74,13 +100,13 @@ print("Testing accuracy: {}".format(
 detector = dlib.simple_object_detector("detector.svm")
 
 # We can look at the HOG filter we learned.  It should look like a face.  Neat!
-# win_det = dlib.image_window()
-# win_det.set_image(detector)
+win_det = dlib.image_window()
+win_det.set_image(detector)
 
 # Now let's run the detector over the images in the faces folder and display the
 # results.
 print("Showing detections on the images in the faces folder...")
-# win = dlib.image_window()
+win = dlib.image_window()
 for f in glob.glob(os.path.join(faces_folder, "*.jpg")):
     print("Processing file: {}".format(f))
     img = dlib.load_rgb_image(f)
@@ -90,9 +116,9 @@ for f in glob.glob(os.path.join(faces_folder, "*.jpg")):
         print("Detection {}: Left: {} Top: {} Right: {} Bottom: {}".format(
             k, d.left(), d.top(), d.right(), d.bottom()))
 
-    # win.clear_overlay()
-    # win.set_image(img)
-    # win.add_overlay(dets)
+    win.clear_overlay()
+    win.set_image(img)
+    win.add_overlay(dets)
     dlib.hit_enter_to_continue()
 
 # Next, suppose you have trained multiple detectors and you want to run them
@@ -104,7 +130,7 @@ detector2 = dlib.fhog_object_detector("detector.svm")
 # make a list of all the detectors you want to run.  Here we have 2, but you
 # could have any number.
 detectors = [detector1, detector2]
-image = dlib.load_rgb_image(faces_folder + '/2008_002506.jpg')
+image = dlib.load_rgb_image(faces_folder + 'test.jpg')
 [boxes, confidences, detector_idxs] = dlib.fhog_object_detector.run_multiple(detectors, image, upsample_num_times=1, adjust_threshold=0.0)
 for i in range(len(boxes)):
     print("detector {} found box {} with confidence {}.".format(detector_idxs[i], boxes[i], confidences[i]))
@@ -115,8 +141,7 @@ for i in range(len(boxes)):
 # below.
 
 # You just need to put your images into a list.
-images = [dlib.load_rgb_image(faces_folder + '/2008_002506.jpg'),
-          dlib.load_rgb_image(faces_folder + '/2009_004587.jpg')]
+images = [dlib.load_rgb_image(faces_folder + 'test.jpg')]
 # Then for each image you make a list of rectangles which give the pixel
 # locations of the edges of the boxes.
 boxes_img1 = ([dlib.rectangle(left=329, top=78, right=437, bottom=186),
@@ -140,9 +165,5 @@ dlib.hit_enter_to_continue()
 # test_simple_object_detector().  If you have already loaded your training
 # images and bounding boxes for the objects then you can call it as shown
 # below.
-
 print("\nTraining accuracy: {}".format(
     dlib.test_simple_object_detector(images, boxes, detector2)))
-
-#   git config --global user.email "you@example.com"
-#   git config --global user.name "Your Name"

@@ -2,7 +2,7 @@ from flask import Flask, request, render_template, session
 import os
 from flask.wrappers import Response
 
-uploads = "/home/paulius/face/uploads"
+uploads = r"C:\Users\pmick\Desktop\Python\face"
 allowed_extentions = {
     "jpg", "png", "jpeg", "xml"
 }
