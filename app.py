@@ -44,14 +44,17 @@ def ml_upload():
 @app.route("/rec-upload", methods=["POST"])
 def rec_upload():
     file = request.files["file_name"]
-    if allowed_file(file.filename):
-        imgstr = file.read()
-        npimg = numpy.fromstring(imgstr, numpy.uint8)
-        img = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
-        for name in os.listdir("ml"):
-            if recognising(os.path.join("ml", name), img) == True:
-                return {"message": f"Person found! It's {name}"}
-        return {"message": "No matching person found on db"}
+    try:
+        if allowed_file(file.filename):
+            imgstr = file.read()
+            npimg = numpy.fromstring(imgstr, numpy.uint8)
+            img = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
+            for name in os.listdir("ml"):
+                if recognising(os.path.join("ml", name), img) == True:
+                    return {"message": f"Person found! It's {name}"}
+            return {"message": "No matching person found on db"}
+    except:
+        return {"message": "The picture either contains no face or too many"}
             
     else:
         return {"message": "file format not supported or something else went wrong"}

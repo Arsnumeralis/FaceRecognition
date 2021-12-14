@@ -6,7 +6,7 @@ import os
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor(".\\data_files\\shape_predictor_5_face_landmarks.dat")
 recognition_model = dlib.face_recognition_model_v1(".\\data_files\\dlib_face_recognition_resnet_model_v1.dat")
-margin = 0.65
+margin = 0.6
 distances = []
 # query_img = dlib.load_rgb_image(sys.argv[1])
 
