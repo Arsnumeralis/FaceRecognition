@@ -4,8 +4,8 @@ import os
 import sys
 
 detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor(".\\data_files\\shape_predictor_5_face_landmarks.dat")
-recognition_model = dlib.face_recognition_model_v1(".\\data_files\\dlib_face_recognition_resnet_model_v1.dat")
+predictor = dlib.shape_predictor("./data_files/shape_predictor_5_face_landmarks.dat")
+recognition_model = dlib.face_recognition_model_v1("./data_files/dlib_face_recognition_resnet_model_v1.dat")
 
 def vector_collection_local(name):
     for filename in os.listdir(os.path.join("ml", name)):
@@ -17,7 +17,7 @@ def vector_collection_local(name):
         aligned_reference = dlib.get_face_chip(reference_img, reference_shape)
         reference_rep = recognition_model.compute_face_descriptor(aligned_reference)
         reference_rep = numpy.array(reference_rep)
-        numpy.save(os.path.join(f"ml\\{name}", filename), reference_rep)
+        numpy.save(os.path.join(f"ml/{name}", filename), reference_rep)
 
 def vector_collection(name, file, data):
     # reference_img = dlib.load_rgb_image(file)
@@ -29,7 +29,7 @@ def vector_collection(name, file, data):
         aligned_reference = dlib.get_face_chip(reference_img, reference_shape)
         reference_rep = recognition_model.compute_face_descriptor(aligned_reference)
         reference_rep = numpy.array(reference_rep)
-        numpy.save(os.path.join(f"ml\\{name}", file), reference_rep)
+        numpy.save(os.path.join(f"ml/{name}", file), reference_rep)
 
 if __name__ == "__main__":
     vector_collection(sys.argv[1])

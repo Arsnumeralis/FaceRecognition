@@ -4,10 +4,10 @@ import sys
 import os
 
 detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor(".\\data_files\\shape_predictor_5_face_landmarks.dat")
-recognition_model = dlib.face_recognition_model_v1(".\\data_files\\dlib_face_recognition_resnet_model_v1.dat")
+predictor = dlib.shape_predictor("./data_files/shape_predictor_5_face_landmarks.dat")
+recognition_model = dlib.face_recognition_model_v1("./data_files/dlib_face_recognition_resnet_model_v1.dat")
 margin = 0.60
-distances = []
+
 # query_img = dlib.load_rgb_image(sys.argv[1])
 
 def query_vector(query):
@@ -25,8 +25,9 @@ def find_euclidean_distance(query_rep, ref_rep):
     euclidean_distance = numpy.sqrt(euclidean_distance)
     return euclidean_distance
 
-def recognising(name, query):
-    distances = []
+def recognising(name, query, distances = None):
+    if distances is None:
+        distances = []
     for filename in os.listdir(name):
         if filename.endswith(".npy"):
             ref_rep = numpy.load(os.path.join(name, filename))
@@ -36,6 +37,7 @@ def recognising(name, query):
             avg_distance = (sum(distances)/len(distances))
 
     if avg_distance < margin:
+        
         print(f"Match found, the subject is {name}", avg_distance)
         return True
     else:
