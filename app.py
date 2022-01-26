@@ -15,10 +15,6 @@ allowed_extentions = {
 app = Flask(__name__)
 app.config["ml"] = uploads
 
-REG = r"^(\b[a-z]{1}\b)([a-z])_([a-z])"
-def name_conversion(match):
-    return f"{match.group(1).upper()}{match.group(2)} {match.group(3).upper()}"
-
 def allowed_file(filename):
     return "." in filename and \
         filename.rsplit(".", 1)[1].lower() in allowed_extentions
@@ -50,8 +46,8 @@ def ml_upload():
 @app.route("/rec-upload", methods=["POST"])
 def rec_upload():
     file = request.files["file_name"]
-    try:
-        if allowed_file(file.filename):
+    if allowed_file(file.filename):
+        try:
             imgstr = file.read()
             npimg = numpy.fromstring(imgstr, numpy.uint8)
             img = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
@@ -59,13 +55,13 @@ def rec_upload():
                 if recognising(os.path.join("ml", name), img) == True:
                     name_parts = [part.capitalize() for part in name.split("_")]
                     converted_name = " ".join(name_parts)
-                    return {"message": f"Person found! It's {converted_name}"}
-                return {"message": "No matching person found on db"}
-    except:
-        return {"message": "The picture either contains no face or too many"}
-            
+                    return {"message": f"Person found! It's {converted_name}."}
+                return {"message": "No matching person found on database."}
+        except:
+            return {"message": "The picture either contains no face or too many."}
+                
     else:
-        return {"message": "file format not supported or something else went wrong"}
+        return {"message": "File format not supported. Please uploade .png, .jpg or .jpeg files."}
 
 
 if __name__ == "__main__":
