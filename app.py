@@ -56,7 +56,7 @@ def rec_upload():
                     name_parts = [part.capitalize() for part in name.split("_")]
                     converted_name = " ".join(name_parts)
                     return {"message": f"Person found! It's {converted_name}."}
-                return {"message": "No matching person found on database."}
+            return {"message": "No matching person found on database."}
         except:
             return {"message": "The picture either contains no face or too many."}
                 

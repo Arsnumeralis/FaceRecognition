@@ -37,7 +37,6 @@ def recognising(name, query, distances = None):
             avg_distance = (sum(distances)/len(distances))
 
     if avg_distance < margin:
-        
         print(f"Match found, the subject is {name}", avg_distance)
         return True
     else:
