@@ -1,6 +1,6 @@
 # FaceRecognition
 
-This is a facial recognition webapp. 
+This is a facial recognition webapp. Currently it can only successfully identify a person if the image only contains one face facing the camera with some leeway.
 
 Dependencies are listed in the requirements.txt file. 
 
