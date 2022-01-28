@@ -2,7 +2,13 @@
 
 This is a facial recognition webapp. Currently it can only successfully identify a person if the image only contains one face facing the camera with some leeway.
 
-Dependencies are listed in the requirements.txt file. 
+Dependencies are listed in the requirements.txt file.
+
+The following files will be needed to run the app:
+
+1. dlib_face_recognition_resnet_model_v1.dat (link - http://dlib.net/files/dlib_face_recognition_resnet_model_v1.dat.bz2)
+2. mmod_human_face_detector.dat (link - http://dlib.net/files/mmod_human_face_detector.dat.bz2)
+3. shape_predictor_5_face_landmarks.dat (link - http://dlib.net/files/shape_predictor_5_face_landmarks.dat.bz2)
 
 To run, type "flask run" in the command line while in the directory containing the app.py file. 
 
