@@ -17,7 +17,7 @@ Optional arguments are "--host" and "--port".
 The app has two api endpoints - one for uploading reference material and the other for face recognition:
 
 # Reference upload:
-Type "/ml-upload" at the end of the address when calling the api.
+Type "/ref-upload" at the end of the address when calling the api.
 
 In the body tab select form with file upload enabled.
 
