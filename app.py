@@ -1,19 +1,19 @@
 from flask import Flask, request
 import os
 from flask.wrappers import Response
-from vector_collection import vector_collection
+from vector_collection import vector_collection, average_representation
 from recognition import recognising
 import numpy
 import cv2
 import re
 
-uploads = r"ml"
+uploads = r"ref"
 allowed_extentions = {
     "jpg", "png", "jpeg"
 }
 
 app = Flask(__name__)
-app.config["ml"] = uploads
+app.config["ref"] = uploads
 
 def allowed_file(filename):
     return "." in filename and \
@@ -22,24 +22,26 @@ def allowed_file(filename):
 @app.route("/")
 def Homepage():
     return {
-        "Route to machine learning upload": "/ml-upload",
+        "Route to machine learning upload": "/ref-upload",
         "Route to recognition upload": "/rec-upload"
     }
 
-@app.route("/ml-upload", methods=["POST"])
-def ml_upload():
+@app.route("/ref-upload", methods=["POST"])
+def ref_upload():
     files = request.files.getlist("file_name")
     name = request.form["person_name"]
-    if not os.path.isdir(os.path.join(app.config["ml"], name)):
-        os.mkdir(os.path.join(app.config["ml"], name))
+    if not os.path.isdir(os.path.join(app.config["ref"], name)):
+        os.mkdir(os.path.join(app.config["ref"], name))
     uploaded = []
     for file in files:
         if allowed_file(file.filename):
+            # as opposed to saving the image, it is represented as an rgb array
             imgstr = file.read()
             npimg = numpy.fromstring(imgstr, numpy.uint8)
             img = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
             vector_collection(name, file.filename, img)
             uploaded.append(file.filename)
+    average_representation(name)
     return {"message": f"uploaded {uploaded}"}
 
 
@@ -48,11 +50,12 @@ def rec_upload():
     file = request.files["file_name"]
     if allowed_file(file.filename):
         try:
+            # as opposed to saving the image, it is represented as an rgb array
             imgstr = file.read()
             npimg = numpy.fromstring(imgstr, numpy.uint8)
             img = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
-            for name in os.listdir("ml"):
-                if recognising(os.path.join("ml", name), img) == True:
+            for name in os.listdir("ref"):
+                if recognising(os.path.join("ref", name), img) == True:
                     name_parts = [part.capitalize() for part in name.split("_")]
                     converted_name = " ".join(name_parts)
                     return {"message": f"Person found! It's {converted_name}."}

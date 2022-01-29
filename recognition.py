@@ -8,7 +8,7 @@ predictor = dlib.shape_predictor("./data_files/shape_predictor_5_face_landmarks.
 recognition_model = dlib.face_recognition_model_v1("./data_files/dlib_face_recognition_resnet_model_v1.dat")
 margin = 0.60
 
-# query_img = dlib.load_rgb_image(sys.argv[1])
+# query_img = dlib.load_rgb_image(sys.argv[1]) #for testing
 
 def query_vector(query):
     detected_query = detector(query, 1)
@@ -25,26 +25,20 @@ def find_euclidean_distance(query_rep, ref_rep):
     euclidean_distance = numpy.sqrt(euclidean_distance)
     return euclidean_distance
 
-def recognising(name, query, distances = None):
-    if distances is None:
-        distances = []
-    for filename in os.listdir(name):
-        if filename.endswith(".npy"):
-            ref_rep = numpy.load(os.path.join(name, filename))
-            distance = find_euclidean_distance(query_vector(query), ref_rep)
-            print(distance)
-            distances.append(distance)
-            avg_distance = (sum(distances)/len(distances))
-
-    if avg_distance < margin:
-        print(f"Match found, the subject is {name}", avg_distance)
+def recognising(name, query, distance = None):
+    ref_rep = numpy.load(os.path.join(name, "representation.npy"))
+    if distance is None:
+        distance = find_euclidean_distance(query_vector(query), ref_rep)
+    print(distance)
+    if distance < margin:
+        print(f"Match found, the subject is {name}", distance)
         return True
     else:
-        print("Not a match", avg_distance)
+        print("Not a match", distance)
         return False
 
 if __name__ == "__main__":
-    for name in os.listdir("ml"):
-        is_person = recognising(os.path.join("ml", name), sys.argv[1])
+    for name in os.listdir("ref"):
+        is_person = recognising(os.path.join("ref", name), sys.argv[1])
         if is_person == True:
             break
